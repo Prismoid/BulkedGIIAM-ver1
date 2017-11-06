@@ -33,7 +33,7 @@ console.log();
 
 // ID空間発行テスト
 console.log("ID空間発行テスト");
-var keyIDSpace = "0x1001000000001f";
+var keyIDSpace = "0x1001000000001e";
 var nonce = 1;
 var blockH = 2500;
 result = test.regIDSpace64.call(keyIDSpace, blockH, nonce);

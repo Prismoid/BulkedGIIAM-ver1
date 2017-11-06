@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Ethereum Classicノードに接続し、指定したIDに対応した所有者情報を得る</title>
+  </head>
+  <body>
+    <h1>Ethereum Classicノードに接続し、指定したIDに対応した所有者情報を得る</h1>
+    <font size="4">128bit(16進数)のIDを入力してください</font>
+ 
+    <form method="post">
+      ID: <input type="text" name="name" size="40" value=<%= targetIDStr %>>
+      <input type="submit" value="検索">
+    </form>
+    <% if (decision == 0) { %>
+    <table border="1">
+      <tr><th height="20">対象ID</th><th>所有者</th><th>登録ドメイン名</th></tr>
+      <tr><td height="20"><b><%= %></b></td><td><%=  %></td><td><%=  %></td></tr>
+    </table>
+    <% } else if (decision == 1) { %>
+    <table border="1">
+      <tr><th height="20">対象ID</th><th>所有者</th><th>登録ドメイン名</th></tr>
+      <tr><td height="20"><b><%= targetIDStr %></b></td><td><%= owner %></td><td><%= domain  %></td></tr>
+    </table>
+    <% } else { %>
+    <table border="1">
+      <tr><th height="20">対象ID</th><th>所有者</th><th>登録ドメイン名</th></tr>
+      <tr><td height="20"><b><%= %></b></td><td><%=  %></td><td><%=  %></td></tr>
+    </table>
+    <font size="4">※入力値に問題があります</font>
+    <% } %>
+
+    <% if (decision == 1) { %>
+    <form method="get">
+      <input type="submit" value="JSONデータの取得">
+    </form>
+    <% } %>
+    <% if (jsonFlag == 1) { %>
+    <font size="4"><%= json %></font>
+    <% } %>
+  </body>
+</html>

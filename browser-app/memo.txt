@@ -1,0 +1,41 @@
+[node.jsでサーバーを作る]
+https://ipl.sfc.keio.ac.jp/text/info2-2014-9/lecture-08/
+
+node sample.jsで動かす
+http://localhost:1234などとして接続
+
+fs = require("fs")を定義して
+fs.readFile("ファイルのディレクトリ")
+でthmlを引張てこれる
+
+server.6が掲示板でPOSTも使っていて参考になる
+
+[Node.jsでMySQLを使うメモ(読んでない)]
+https://qiita.com/PianoScoreJP/items/7ed172cd0e7846641e13
+
+[jsでのJSONの呼び出し]
+http://uxmilk.jp/46993
+
+[テンプレートエンジンejsの使い方について(条件分岐など)]
+https://qiita.com/y_hokkey/items/31f1daa6cecb5f4ea4c9
+
+[npmインストール時には、node_modules部分はGitHubには不要, --saveでjsonに残して置くだけで十分(npm install時に入る)]
+https://qiita.com/twipg/items/9313034734be72acc199
+
+[Web3のバージョン]
+npm install web3@0.16.0を採用
+1.0.0beta版はまだ使っていない
+
+[Sync-Requestを使わない方がいい(商用利用の場合、スケールしなくなる)]
+// 開発の場合は使っていいよ！ということ
+http://designetwork.hatenablog.com/entry/2017/02/21/node-then-request
+
+contract.method.call(argument).then(function(result){ DB = result; });
+をEthの場合使うと良い
+https://ethereum.stackexchange.com/questions/16807/web3-new-bignumber-not-a-base-16-number-when-calling-a-contract-constant-fun/16813
+
+[Node.jsの非同期処理について]
+ES2017のPromiseを用いてasync/awaitを使う
+このページが非常に参考になる
+https://qiita.com/ryosukes/items/db8b45c8ea42f924f02f
+

@@ -23,7 +23,7 @@ var test = web3.eth.contract(abi).at(addr);
 /*** ディジタル署名の実行 ***/
 // string型で作成した場合(Solidity側でもStringで受ける必要がある)
 var x1 = new BigNumber('0x271000'); // 2560000ブロックまで有効
-var _keyIDSpaceAndRange = '0x1001000000001f00000000ffffffff';
+var _keyIDSpaceAndRange = '0x1001000000001e00000000ffffffff';
 var _validateBlockHeight = "0x" + leftPad(web3.toHex(x1).slice(2).toString(16), 16, 0); // 16*4=64bit
 var _middleOfRange = ["0x1fffffff", "0x2fffffff", "0x3fffffff", "0x4fffffff", "0x5fffffff", "0x6fffffff", "0x7fffffff", "0x8fffffff", 
 		      "0x9fffffff", "0xafffffff", "0xbfffffff", "0xcfffffff", "0xdfffffff", "0xefffffff", "0xfffffffe"]; // 16個に分割
@@ -71,5 +71,5 @@ console.log(_s);
 
 var decision = test.transferIDSpace64.call(_keyIDSpaceAndRange, _validateBlockHeight, _middleOfRange, _toPlace, _to, _v, _r, _s, {gas: 4700000});
 console.log(decision);
-// var decision = test.transferIDSpace64.sendTransaction(_keyIDSpaceAndRange, _validateBlockHeight, _middleOfRange, _toPlace, _to, _v, _r, _s, {gas: 4700000});
-// console.log(decision);
+var decision = test.transferIDSpace64.sendTransaction(_keyIDSpaceAndRange, _validateBlockHeight, _middleOfRange, _toPlace, _to, _v, _r, _s, {gas: 4700000});
+console.log(decision);

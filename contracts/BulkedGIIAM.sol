@@ -18,7 +18,7 @@ contract BulkedGIIAM {
     OwnerData owner;
     DomainData domain;
 
-    uint8 childNum; mapping(uint8 => uint64) childrenKey64; // レンジ幅がキーとなる
+    uint8 childNum; mapping(uint8 => uint64) childrenKey; // レンジ幅がキーとなる
     uint64 pastOwnerNum; mapping(uint64 => OwnerData) pastOwner;
     uint64 pastDomainNum; mapping(uint64 => DomainData) pastDomain;
   }
@@ -264,8 +264,8 @@ contract BulkedGIIAM {
       proc = -303;
       return proc;
     }
-    // 入力数が分割数限界以下の範囲に収まっているか
-    if ((_middleOfRange.length + 1) > divLimit) {
+    // 入力数が分割数限界以下の範囲に収まっているか、また1以上の入力があるか
+    if ((_middleOfRange.length + 1) > divLimit || (!(_middleOfRange.length > 0))) {
       proc = -304;
       return proc;
     }
@@ -337,7 +337,7 @@ contract BulkedGIIAM {
 	record64[tgt.keyIDSpace][tmp.newKeyRange].owner.addr = _to[tmp.j];
 	record64[tgt.keyIDSpace][tmp.newKeyRange].owner.blockHeight = uint64(block.number);
 	// 親ノードの子ノード情報データベースを更新
-	record64[tgt.keyIDSpace][tgt.keyRange].childrenKey64[tmp.i] = tmp.newKeyRange;
+	record64[tgt.keyIDSpace][tgt.keyRange].childrenKey[tmp.i] = tmp.newKeyRange;
 	// jのオーバーフロー対策
 	if (tmp.j != _toPlace.length - 1) {
 	  tmp.j++;
@@ -354,11 +354,53 @@ contract BulkedGIIAM {
 	record64[tgt.keyIDSpace][tmp.newKeyRange].owner.addr = msg.sender;
 	record64[tgt.keyIDSpace][tmp.newKeyRange].owner.blockHeight = uint64(block.number);
 	// 親ノードの子ノード情報データベースを更新
-	record64[tgt.keyIDSpace][tgt.keyRange].childrenKey64[tmp.i] = tmp.newKeyRange;
+	record64[tgt.keyIDSpace][tgt.keyRange].childrenKey[tmp.i] = tmp.newKeyRange;
       }
     }
     proc = 4;
     return proc;
+  }
+
+  
+  function find64(uint88 _id) public returns(uint120){
+    uint56 keyIDSpace = uint56(_id >> 32);
+    uint32 tgt = uint32(_id);
+    uint64 keyRange;
+    uint8 left;
+    uint8 right;
+
+    // まだ発行されていない空間
+    if (!issued64[keyIDSpace]) {
+      proc = -401;
+      return uint120(0);
+    }
+    // 発行されている, can be out of gas.(ペーパーに入れる)
+    keyRange = 0x00000000ffffffff;
+    left = 0;
+    right = record64[keyIDSpace][keyRange].childNum - 1;
+    while (true) { // 見つかるまで無限ループ
+      // tgtが小さい場合(左にある)
+      if (tgt < uint32(record64[keyIDSpace][keyRange].childrenKey[(left + right) / 2] >> 32)) {
+	right = (left + right) / 2;
+	continue;
+      }
+      // tgtが大きく(イコールも含む)、endOfRangeには含まれない場合(右にある)
+      if (tgt > uint32(record64[keyIDSpace][keyRange].childrenKey[(left + right) / 2])) {
+	left = (left + right) / 2 + 1; // 対象点にはないことが確定するため
+	continue;
+      }
+      // (left + right) / 2が対象のノード, 既に譲渡されている場合
+      keyRange = record64[keyIDSpace][keyRange].childrenKey[(left + right) / 2];
+      if (!valid64[keyIDSpace][keyRange]) {
+	left = 0;
+	right = record64[keyIDSpace][keyRange].childNum - 1;
+	continue;
+      }
+      // 譲渡されていない場合, これが対象
+      return (uint120(keyIDSpace) << 64) + uint120(keyRange);
+    }
+      
+    
   }
   
   // 所有権、及びドメイン情報の確認
